@@ -12,14 +12,7 @@ protected
     constant Real asin1 = Modelica.Math.asin(1);
 algorithm
     scaledX1 := x/deltax;
-    if scaledX1 <= -0.999999999 then
-      out := neg;
-    elseif scaledX1 >= 0.999999999 then
-      out := pos;
-    else
-      y := (Modelica.Math.tanh(Modelica.Math.tan(scaledX1*asin1)) + 1)/2;
-      out := pos*y + (1 - y)*neg;
-    end if;
+    out := if scaledX1<=-0.999999999 then neg elseif scaledX1>=0.999999999 then pos else pos*(Modelica.Math.tanh(Modelica.Math.tan(scaledX1*asin1)) + 1)/2 + (1 - (Modelica.Math.tanh(Modelica.Math.tan(scaledX1*asin1)) + 1)/2)*neg;
 
     annotation (
 smoothOrder=1,
