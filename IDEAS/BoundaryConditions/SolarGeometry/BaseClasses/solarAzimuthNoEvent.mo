@@ -5,7 +5,7 @@ function solarAzimuthNoEvent "Determines solar azimuth with no event"
   input Real day(quantity="Time", unit="s") "Number of seconds in day";
   output Real solAzi(quantity="Angle",unit="rad",displayUnit="deg") "Solar azimuth";
 algorithm
-  if noEvent(solTim - integer(solTim/day)*day<43200) then
+  if noEvent(solTim - (solTim/day)*day<43200) then
     solAzi := -solAziTem;
   else
     solAzi := solAziTem;

@@ -2,6 +2,7 @@ within IDEAS.BoundaryConditions;
 model SimInfoManager
   "Simulation information manager for handling time and climate data required in each for simulation."
   extends BoundaryConditions.Interfaces.PartialSimInfoManager(
+    redeclare IDEAS.BoundaryConditions.WeatherData.ReaderTMY3 weaDat,
     Te = TDryBul.y,TeAv = Te,
     Tground=TdesGround,
     relHum = phiEnv.y,

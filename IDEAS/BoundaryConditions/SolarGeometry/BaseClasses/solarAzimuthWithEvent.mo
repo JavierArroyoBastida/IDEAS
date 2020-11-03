@@ -5,7 +5,7 @@ function solarAzimuthWithEvent "Determines solar azimuth with event"
   input Real day(quantity="Time", unit="s") "Number of seconds in day";
   output Real solAzi(quantity="Angle",unit="rad",displayUnit="deg") "Solar azimuth";
 algorithm
-  if (solTim - integer(solTim/day)*day<43200) then
+  if (solTim - (solTim/day)*day<43200) then
     solAzi := -solAziTem;
   else
     solAzi := solAziTem;

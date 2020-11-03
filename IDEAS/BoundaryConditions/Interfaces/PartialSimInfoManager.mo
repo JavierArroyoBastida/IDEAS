@@ -174,7 +174,7 @@ protected
 
   final constant Real MMFraction=1.528635
     "Molar mass of CO2 divided by the molar mass of moist air";
-  IDEAS.BoundaryConditions.WeatherData.ReaderTMY3 weaDat(
+  replaceable IDEAS.BoundaryConditions.Interfaces.PartialReaderTMY3 weaDat(
     filNam=filNam)
     annotation (Placement(transformation(extent={{-100,-60},{-80,-40}})));
   IDEAS.BoundaryConditions.SolarIrradiation.BaseClasses.RelativeAirMass
