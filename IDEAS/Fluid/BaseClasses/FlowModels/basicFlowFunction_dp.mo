@@ -17,9 +17,11 @@ protected
     "Normalised pressure difference";
   Real dpNormSq=dpNorm^2
     "Square of normalised pressure difference";
+  Real sign_dp = if dp>0 then 1 elseif dp<0 then -1 else 0;
+
 algorithm
    m_flow := smooth(2, if noEvent(abs(dp)>dp_turbulent)
-               then sign(dp)*k*sqrt(abs(dp))
+               then sign_dp*k*sqrt(abs(dp))
                else (1.40625  + (0.15625*dpNormSq - 0.5625)*dpNormSq)*m_flow_turbulent*dpNorm);
   annotation(Inline=false,
            smoothOrder=2,

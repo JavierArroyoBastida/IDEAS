@@ -17,10 +17,11 @@ protected
     "Normalised mass flow rate";
   Real m_flowNormSq = m_flowNorm^2
     "Square of normalised mass flow rate";
+  Real sign_m_flow = if m_flow>0 then 1 elseif m_flow<0 then -1 else 0;
 
 algorithm
  dp := smooth(2, if noEvent(abs(m_flow)>m_flow_turbulent)
-      then sign(m_flow)*(m_flow/k)^2
+      then sign_m_flow*(m_flow/k)^2
       else (0.375 + (0.75-0.125*m_flowNormSq)*m_flowNormSq)*dp_turbulent*m_flowNorm);
 
  annotation (Inline=false,
