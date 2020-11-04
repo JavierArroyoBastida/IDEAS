@@ -4,18 +4,15 @@ partial model ValveParameters "Model with parameters for valves"
   parameter IDEAS.Fluid.Types.CvTypes CvData=IDEAS.Fluid.Types.CvTypes.OpPoint
     "Selection of flow coefficient"
    annotation(Dialog(group = "Flow Coefficient"));
-  parameter Real Kv(
-    fixed= if CvData==IDEAS.Fluid.Types.CvTypes.Kv then true else false)
+  parameter Real Kv = Kv_SI/(rhoStd/3600/sqrt(1E5))
     "Kv (metric) flow coefficient [m3/h/(bar)^(1/2)]"
   annotation(Dialog(group = "Flow Coefficient",
                     enable = (CvData==IDEAS.Fluid.Types.CvTypes.Kv)));
-  parameter Real Cv(
-    fixed= if CvData==IDEAS.Fluid.Types.CvTypes.Cv then true else false)
+  parameter Real Cv = Kv_SI/(rhoStd*0.0631/1000/sqrt(6895))
     "Cv (US) flow coefficient [USG/min/(psi)^(1/2)]"
   annotation(Dialog(group = "Flow Coefficient",
                     enable = (CvData==IDEAS.Fluid.Types.CvTypes.Cv)));
-  parameter Modelica.SIunits.Area Av(
-    fixed= if CvData==IDEAS.Fluid.Types.CvTypes.Av then true else false)
+  parameter Modelica.SIunits.Area Av = Kv_SI/sqrt(rhoStd)
     "Av (metric) flow coefficient"
    annotation(Dialog(group = "Flow Coefficient",
                      enable = (CvData==IDEAS.Fluid.Types.CvTypes.Av)));
@@ -40,37 +37,10 @@ partial model ValveParameters "Model with parameters for valves"
 
 protected
   parameter Real Kv_SI(
-    min=0,
-    fixed= false)
+    min=0) = m_flow_nominal/sqrt(dpValve_nominal)
     "Flow coefficient for fully open valve in SI units, Kv=m_flow/sqrt(dp) [kg/s/(Pa)^(1/2)]"
   annotation(Dialog(group = "Flow Coefficient",
                     enable = (CvData==IDEAS.Fluid.Types.CvTypes.OpPoint)));
-initial equation
-  if  CvData == IDEAS.Fluid.Types.CvTypes.OpPoint then
-    Kv_SI =           m_flow_nominal/sqrt(dpValve_nominal);
-    Kv    =           Kv_SI/(rhoStd/3600/sqrt(1E5));
-    Cv    =           Kv_SI/(rhoStd*0.0631/1000/sqrt(6895));
-    Av    =           Kv_SI/sqrt(rhoStd);
-  elseif CvData == IDEAS.Fluid.Types.CvTypes.Kv then
-    Kv_SI =           Kv*rhoStd/3600/sqrt(1E5)
-      "Unit conversion m3/(h*sqrt(bar)) to kg/(s*sqrt(Pa))";
-    Cv    =           Kv_SI/(rhoStd*0.0631/1000/sqrt(6895));
-    Av    =           Kv_SI/sqrt(rhoStd);
-    dpValve_nominal =  (m_flow_nominal/Kv_SI)^2;
-  elseif CvData == IDEAS.Fluid.Types.CvTypes.Cv then
-    Kv_SI =           Cv*rhoStd*0.0631/1000/sqrt(6895)
-      "Unit conversion USG/(min*sqrt(psi)) to kg/(s*sqrt(Pa))";
-    Kv    =           Kv_SI/(rhoStd/3600/sqrt(1E5));
-    Av    =           Kv_SI/sqrt(rhoStd);
-    dpValve_nominal =  (m_flow_nominal/Kv_SI)^2;
-  else
-    assert(CvData == IDEAS.Fluid.Types.CvTypes.Av, "Invalid value for CvData.
-Obtained CvData = " + String(CvData) + ".");
-    Kv_SI =           Av*sqrt(rhoStd);
-    Kv    =           Kv_SI/(rhoStd/3600/sqrt(1E5));
-    Cv    =           Kv_SI/(rhoStd*0.0631/1000/sqrt(6895));
-    dpValve_nominal =  (m_flow_nominal/Kv_SI)^2;
-  end if;
 
   annotation (Documentation(info="<html>
 <p>
