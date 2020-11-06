@@ -223,11 +223,11 @@ block ReaderTMY3 "Reader for TMY3 weather data"
     Dialog(tab="Advanced", group="Sky temperature"));
 
   final parameter Modelica.SIunits.Angle lon(displayUnit="deg")=
-    0 "Longitude";
+    IDEAS.BoundaryConditions.WeatherData.BaseClasses.getLongitudeTMY3(filNam) "Longitude";
   final parameter Modelica.SIunits.Angle lat(displayUnit="deg")=
-    0 "Latitude";
+    IDEAS.BoundaryConditions.WeatherData.BaseClasses.getLatitudeTMY3(filNam) "Latitude";
   final parameter Modelica.SIunits.Time timZon(displayUnit="h")=
-    3600;
+    IDEAS.BoundaryConditions.WeatherData.BaseClasses.getTimeZoneTMY3(filNam) "Time Zone";
 
 protected
   final parameter Modelica.SIunits.Time[2] timeSpan=
