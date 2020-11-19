@@ -80,15 +80,13 @@ protected
     "To avoid duplicate operations";
 
 initial equation
-  weightFactorDir = {if IDEAS.Utilities.Math.Functions.isAngle(inc[i], IDEAS.Types.Tilt.Floor)
-                     then area[i]*epsSw[i]/AfloorTot
-                     else (1-fraTotAbsFloor)*area[i]*epsSw[i]/ASWotherSurface for i in 1:nSurf};
+  weightFactorDir = {(1-fraTotAbsFloor)*area[i]*epsSw[i]/ASWotherSurface for i in 1:nSurf};
   weightFactorDif = area .* epsSw / sum(area .* epsSw);
   weightFactorGain = area .* epsLw / sum(area .* epsLw);
   // minimum of Modelica.Constants.small to guard against division by zero
-  AfloorTot = max(Modelica.Constants.small,sum({if IDEAS.Utilities.Math.Functions.isAngle(inc[i], IDEAS.Types.Tilt.Floor) then area[i] else 0 for i in 1:nSurf}));
-  fraTotAbsFloor = sum({if IDEAS.Utilities.Math.Functions.isAngle(inc[i], IDEAS.Types.Tilt.Floor) then area[i]*epsSw[i] else 0 for i in 1:nSurf})/AfloorTot;
-  ASWotherSurface = sum({if IDEAS.Utilities.Math.Functions.isAngle(inc[i], IDEAS.Types.Tilt.Floor) then 0 else area[i]*epsSw[i] for i in 1:nSurf});
+  AfloorTot = max(Modelica.Constants.small,sum({0 for i in 1:nSurf}));
+  fraTotAbsFloor = sum({0 for i in 1:nSurf})/AfloorTot;
+  ASWotherSurface = sum({area[i]*epsSw[i] for i in 1:nSurf});
   weightFactorTRad = weightFactorDif;
 
   assert(AfloorTot>2*Modelica.Constants.small, "In " + getInstanceName() + ": Zone does not contain a floor surface so incoming beam radiation is spread over all other surfaces! Is this intended? \n", AssertionLevel.warning);
