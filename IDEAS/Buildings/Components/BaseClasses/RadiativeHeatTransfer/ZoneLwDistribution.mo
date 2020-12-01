@@ -1,4 +1,4 @@
-﻿within IDEAS.Buildings.Components.BaseClasses.RadiativeHeatTransfer;
+within IDEAS.Buildings.Components.BaseClasses.RadiativeHeatTransfer;
 model ZoneLwDistribution "internal longwave radiative heat exchange"
 
   parameter Integer nSurf(min=1) "Number of surfaces connected to the zone";
@@ -64,7 +64,7 @@ initial equation
   // If max(A)<sum(A)/2 is not satisfied, then the non-linear
   // algebraic loop will not converge and therefore we do not compute
   // view factors according to Carroll.
-  computeCarroll = false;
+  computeCarroll = not simVieFac and max(A)<sum(A)/2;
   F1= if computeCarroll then {max(0,min(FMax,1/(1 - A[i] .* F1[i]/(A*F1)))) for i in 1:nSurf} else zeros(nSurf);
   F2= A ./ (ones(nSurf)*sum(A) - A);
 
