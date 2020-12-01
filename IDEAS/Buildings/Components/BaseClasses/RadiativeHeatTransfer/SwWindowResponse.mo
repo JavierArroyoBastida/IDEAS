@@ -41,22 +41,6 @@ model SwWindowResponse "Shortwave window respone"
   Modelica.Blocks.Math.Gain radToDeg(final k=180/Modelica.Constants.pi)
     "Conversion of radians to degrees"
     annotation (Placement(transformation(extent={{-60,-50},{-40,-30}})));
-  Modelica.Blocks.Tables.CombiTable1Ds SwAbsDir(
-    final table=SwAbs,
-    final smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments,
-    final columns=columns) "lookup table for AOI dependent absorptance"
-    annotation (Placement(transformation(
-        extent={{-9,-9},{9,9}},
-        rotation=90,
-        origin={-29,-11})));
-  Modelica.Blocks.Tables.CombiTable1Ds SwTransDir(
-    final table=SwTrans,
-    final smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments,
-    final columns={2}) "lookup table for AOI dependent transmittance"
-    annotation (Placement(transformation(
-        extent={{-9,-9},{9,9}},
-        rotation=90,
-        origin={-3,-11})));
   Modelica.Thermal.HeatTransfer.Sources.PrescribedHeatFlow[nLay] Abs_flow
     "Solar absorptance in the panes source" annotation (Placement(
         transformation(
@@ -100,6 +84,13 @@ model SwWindowResponse "Shortwave window respone"
         extent={{-7,-7},{7,7}},
         rotation=90,
         origin={51,21})));
+  Modelica.Blocks.Sources.Constant const[nLay](k=SwTransConstant)
+    annotation (Placement(transformation(extent={{-50,-20},{-36,-6}})));
+  Modelica.Blocks.Sources.Constant const1(k=SwAbsConstant)
+    annotation (Placement(transformation(extent={{-20,-20},{-6,-6}})));
+  parameter Real k=1 "Constant output value";
+  parameter Real SwTransConstant=0.4 "Constant short wave transfer factor";
+  parameter Real SwAbsConstant=0.8 "Constant short wave absortion factor";
 equation
 
   connect(Abs_flow.port, iSolAbs) annotation (Line(
@@ -116,14 +107,6 @@ equation
       smooth=Smooth.None));
   connect(solDir, SwTransDirProd.u1) annotation (Line(
       points={{-100,60},{-60,60},{-60,4},{-11.2,4},{-11.2,10.6}},
-      color={0,0,127},
-      smooth=Smooth.None));
-  connect(SwAbsDir.y, SwAbsDirProd.u2) annotation (Line(
-      points={{-29,-1.1},{-29,13.45},{-28.8,13.45},{-28.8,10.6}},
-      color={0,0,127},
-      smooth=Smooth.None));
-  connect(SwTransDir.y[1], SwTransDirProd.u2) annotation (Line(
-      points={{-3,-1.1},{-3,13.45},{-2.8,13.45},{-2.8,10.6}},
       color={0,0,127},
       smooth=Smooth.None));
 
@@ -150,10 +133,6 @@ equation
       smooth=Smooth.None));
   connect(radToDeg.u, angInc) annotation (Line(points={{-62,-40},{-76,-40},{
           -100,-40}},           color={0,0,127}));
-  connect(radToDeg.y, SwAbsDir.u) annotation (Line(points={{-39,-40},{-29,-40},
-          {-29,-21.8}}, color={0,0,127}));
-  connect(radToDeg.y, SwTransDir.u) annotation (Line(points={{-39,-40},{-3,-40},
-          {-3,-21.8}},      color={0,0,127}));
   connect(SwAbsDifProd.y, add.u1) annotation (Line(points={{25,28.7},{25,34},{-27.2,
           34},{-27.2,38.4}}, color={0,0,127}));
   connect(SwTransDifProd.y, Dif_flow.Q_flow) annotation (Line(points={{51,28.7},
@@ -161,6 +140,10 @@ equation
 
    connect(SwTransDifProd.u, solDif) annotation (Line(points={{51,12.6},{51,2},{-64,
           2},{-64,20},{-100,20}}, color={0,0,127}));
+  connect(const.y, SwAbsDirProd.u2) annotation (Line(points={{-35.3,-13},{-28.8,
+          -13},{-28.8,10.6}}, color={0,0,127}));
+  connect(const1.y, SwTransDirProd.u2) annotation (Line(points={{-5.3,-13},{
+          -2.8,-13},{-2.8,10.6}}, color={0,0,127}));
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
             100}})),
