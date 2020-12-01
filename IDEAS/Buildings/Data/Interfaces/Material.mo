@@ -34,7 +34,7 @@ record Material "Template record for properties of building materials"
   final parameter Real piLay=d/sqrt(alpha)
     "d/sqrt(mat.alpha) of the depicted layer";
   final parameter Integer nSta(min=2) = max(2, integer(ceil(nStaRef*piLay/piRef)))
-    "Actual number of state variables in material";
+    "Actual number of state variables in material" annotation(Evaluate = true);
 
   annotation (Documentation(info="<html>
 <p>
